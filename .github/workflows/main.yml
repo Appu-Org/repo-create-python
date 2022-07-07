@@ -1,7 +1,31 @@
 name: repo create
 
-on: [push]
-
+on:
+ issues:
+    types: [opened, edited, milestoned]
+    inputs: 
+    repo: "Myrepo001"
+    org: "Appu-Test-org"
+    Collaborator: "appuraj-philips"
+    
+ 
+ 
+ workflow_dispatch:
+    inputs:
+      repo:
+        description: 'Repository name'     
+        required: true
+      org:
+        type: choice
+        description: Select Organization
+        options:
+        - philips-test-org
+        - Appu-Test-org
+        - Unit-II-Org
+      
+      Collaborator:
+        description: 'Collaborator GitHub-Handle'      
+    
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -25,10 +49,11 @@ jobs:
     - name: Executing python main()
       env: 
         github_url: ${{ secrets.GIT_URL }}
-        pat: ${{ secrets.GITHUB_TOKEN }}
+        org_name: ${{ github.event.inputs.org }}
         owner: ${{ github.repository_owner }}
         git_user: ${{ secrets.USERNAME}}
         token: ${{ secrets.PAT}}
-        repo: ${{ github.event.repository.name }}
+        repo: ${{ github.event.inputs.repo }}
+        member: ${{ github.event.inputs.Collaborator}}
       run: |
         python main.py
